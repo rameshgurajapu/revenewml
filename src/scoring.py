@@ -237,8 +237,7 @@ def main(database):
     correlations = scoring_data.corr()
 
     # Load calibrated model
-    # saved_model = application_path + '/savedmodels/XGBoostModel_20190814.dat'  # FIXME: specify in config.ini
-    saved_model = 'src/savedmodels/XGBoostModel_20190814.dat'  # FIXME: specify in config.ini
+    saved_model = application_path + '/savedmodels/XGBoostModel_20190814.dat'  # FIXME: specify in config.ini
     logging.info(
         f'\nStep 3 of 6: Scoring data with pre-calibrated XGBoost model "{saved_model}"... ({time.ctime()})\n')
     clf = pickle.load(open(saved_model, 'rb'))
