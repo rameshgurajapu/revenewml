@@ -1,0 +1,15 @@
+sum_list = [
+    'ProjectID',
+    'Report_Group_Flag',
+    'ReportID',
+    # 'Invoice_Time_Frame_Discrepancy',
+    'NotZeroEnding_Check_Amount',
+    'NotZeroEnding_Absolute_Amount',
+    'NotZeroEnding_Gross_Invoice_Amount',
+    'NotZeroEnding_Gross_Invoice_Amount_Local',
+    'HasFrac_Check_Amount',
+    'HasFrac_Absolute_Amount',
+    'HasFrac_Gross_Invoice_Amount',
+    'HasFrac_Gross_Invoice_Amount_Local',
+    'UniqueDigits_Gross_Invoice_Amount',
+]
