@@ -52,6 +52,7 @@ def main(database):
     config_file = application_path + '/../config.ini'
     config.read(config_file)
     dsn = config['Datasource']['dsn']
+    model = config['Calibration']['model']
 
     # Create connection strings
     cnxn_str = f'mssql+pyodbc://@{dsn}'
@@ -195,7 +196,7 @@ def main(database):
             .merge(sums, right_index=True, left_index=True)
             .merge(stds, right_index=True, left_index=True))
     agg1.reset_index(inplace=True)
-    agg1 = agg1.merge(count_profiles, on=rollup1, how='left')
+    agg1 = agg1.merge(count_profiles, on=rollup1, how='left').drop(columns='ReportID')
 
     # Free up memory
     del mins
@@ -237,7 +238,7 @@ def main(database):
     correlations = scoring_data.corr()
 
     # Load calibrated model
-    saved_model = application_path + '/savedmodels/XGBoostModel_20190814.dat'  # FIXME: specify in config.ini
+    saved_model = application_path + '/savedmodels/' + model
     logging.info(
         f'\nStep 3 of 6: Scoring data with pre-calibrated XGBoost model "{saved_model}"... ({time.ctime()})\n')
     clf = pickle.load(open(saved_model, 'rb'))
