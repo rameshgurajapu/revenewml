@@ -208,7 +208,7 @@ def main(database):
             .merge(sums, right_index=True, left_index=True)
             .merge(stds, right_index=True, left_index=True))
     agg1.reset_index(inplace=True)
-    agg1 = agg1.merge(count_profiles, on=rollup1, how='left').drop(columns=['ReportID', 'ReportGroupo'])
+    agg1 = agg1.merge(count_profiles, on=rollup1, how='left').drop(columns=['ReportID', 'ReportGroup'])
 
     # Free up memory
     del mins
