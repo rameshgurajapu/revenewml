@@ -3,7 +3,7 @@ import click
 
 
 @click.command()
-@click.option('--database', default='AvianaML')
+@click.option('--database', default='RevenewSPRtest')
 def main(database):
     # Import packages TODO: force user to enter database param
     import os
@@ -32,7 +32,7 @@ def main(database):
     try:
         database
     except:
-        database = 'AvianaML'
+        database = 'RevenewSPRtest'
 
     # Get application path
     if getattr(sys, 'frozen', False):
