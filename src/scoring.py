@@ -208,7 +208,7 @@ def main(database):
             .merge(sums, right_index=True, left_index=True)
             .merge(stds, right_index=True, left_index=True))
     agg1.reset_index(inplace=True)
-    agg1 = agg1.merge(count_profiles, on=rollup1, how='left').drop(columns='ReportID')
+    agg1 = agg1.merge(count_profiles, on=rollup1, how='left').drop(columns=['ReportID', 'ReportGroupo'])
 
     # Free up memory
     del mins
@@ -246,8 +246,9 @@ def main(database):
     clf = pickle.load(open(saved_model, 'rb'))
 
     # Predicted probabilities
-    y_prob = clf.predict_proba(scoring_data)  # TODO: Set score = 0 if (AmountNet__NETONE or AmountNet__NETZERO) == 1
+    y_prob = clf.predict_proba(scoring_data)
 
+    # TODO: Set score = 0 if (AmountNet__NETONE or AmountNet__NETZERO) == 1
 
     # Predicted classes
     y_pred = pd.cut(y_prob[:, 1], bins=[0.0, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0], right=True,
