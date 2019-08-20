@@ -70,7 +70,7 @@ def main(database):
     # Set up logging
     start = timer()
     log_file = application_path + '/../log.txt'
-    logging.basicConfig(filename=log_file, level=logging.INFO)
+    logging.basicConfig(filename=log_file, level=logging.DEBUG)
     handler = logging.StreamHandler()
     logger = logging.getLogger()
     logger.addHandler(handler)
@@ -224,16 +224,6 @@ def main(database):
     logging.info(
         f'\n>> Data in memory has {table_size[0]} rows and {table_size[1]} columns ... ({time.ctime()})')
 
-    try:
-        scoring_data = scoring_data.drop(columns=['ReportGroup'])
-    except:
-        pass
-
-    try:
-        scoring_data = scoring_data.drop(columns=['ReportID'])
-    except:
-        pass
-
     # Calculate correlations among predictive features
     correlations = scoring_data.corr()
 
@@ -245,6 +235,7 @@ def main(database):
 
     # Predicted probabilities
     y_prob = clf.predict_proba(scoring_data)  # TODO: Set score = 0 if (AmountNet__NETONE or AmountNet__NETZERO) == 1
+
 
     # Predicted classes
     y_pred = pd.cut(y_prob[:, 1], bins=[0.0, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0], right=True,
