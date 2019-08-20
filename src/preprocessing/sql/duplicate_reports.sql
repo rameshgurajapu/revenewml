@@ -79,7 +79,7 @@ SELECT
     IIF([Void Indicator] = 'RECONCILED', 1, 0) AS Void_Indicator__RECONCILED,
     IIF([Void Indicator] = 'NEGOTIABLE', 1, 0) AS Void_Indicator__NEGOTIABLE,
     IIF([Void Indicator] = '0', 1, 0) AS Void_Indicator__0,
---     IIF([Void Indicator] = 'NULL', 1, 0) AS Void_Indicator__NULL,
+    IIF([Void Indicator] = 'NULL', 1, 0) AS Void_Indicator__NULL,
     IIF([Void Indicator] NOT IN ('CLEARED', 'VOIDED', 'RECONCILED', 'NEGOTIABLE', '0'), 1, 0) AS Void_Indicator__OTH,
     IIF(ReportGroup = '1', 1, 0) AS ReportGroup__1,
     IIF(ReportGroup = '2', 1, 0) AS ReportGroup__2,
