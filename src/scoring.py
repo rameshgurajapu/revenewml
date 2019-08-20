@@ -44,7 +44,8 @@ def main(database):
             application_path = os.path.dirname(app_full_path)
             running_mode = 'Non-interactive'
         except NameError:
-            application_path = os.getcwd()
+            # application_path = os.getcwd()
+            application_path = '/Users/mj/Desktop/code/revenewml/src'
             running_mode = 'Interactive'
 
     # Read config file
@@ -61,11 +62,22 @@ def main(database):
     engine = create_engine(
         cnxn_str,
         fast_executemany=True,
-        # echo=True,
-        # echo_pool=False,
+        echo=True,
+        echo_pool=False,
         # implicit_returning=False,
         # isolation_level="AUTOCOMMIT",
     )
+
+    # Debug settings for database connection
+    host = '208.43.250.18'
+    port = '51949'
+    user = 'sa'
+    password = 'Aviana$92821'
+    database = 'RevenewSPRtest'
+    driver = '/usr/local/Cellar/freetds/1.1.11/lib/libtdsodbc.0.so'
+    cnxn = f"mssql+pyodbc://{user}:{password}@{host}:{port}/{database}?driver={driver}"
+    engine = create_engine(cnxn)
+    engine.connect()
 
     # Set up logging
     start = timer()
