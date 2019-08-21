@@ -48,7 +48,7 @@ max_list = [
     'Void_Indicator__OTH',
     'Void_Indicator__RECONCILED',
     'Void_Indicator__VOIDED',
-    # 'Void_Indicator__NULL',
+    'Void_Indicator__NULL',
     'ReportGroup__1',
     'ReportGroup__10',
     'ReportGroup__2',

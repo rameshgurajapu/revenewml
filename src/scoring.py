@@ -68,16 +68,16 @@ def main(database):
         # isolation_level="AUTOCOMMIT",
     )
 
-    # Debug settings for database connection
-    host = '208.43.250.18'
-    port = '51949'
-    user = 'sa'
-    password = 'Aviana$92821'
-    database = 'RevenewSPRtest'
-    driver = '/usr/local/Cellar/freetds/1.1.11/lib/libtdsodbc.0.so'
-    cnxn = f"mssql+pyodbc://{user}:{password}@{host}:{port}/{database}?driver={driver}"
-    engine = create_engine(cnxn)
-    engine.connect()
+    # # Debug settings for database connection
+    # host = '208.43.250.18'
+    # port = '51949'
+    # user = 'sa'
+    # password = 'Aviana$92821'
+    # database = 'RevenewSPRtest'
+    # driver = '/usr/local/Cellar/freetds/1.1.11/lib/libtdsodbc.0.so'
+    # cnxn = f"mssql+pyodbc://{user}:{password}@{host}:{port}/{database}?driver={driver}"
+    # engine = create_engine(cnxn)
+    # engine.connect()
 
     # Set up logging
     start = timer()
