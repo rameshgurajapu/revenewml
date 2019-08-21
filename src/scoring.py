@@ -44,8 +44,8 @@ def main(database, dsn):
         try:
             # app_full_path = os.path.realpath(__file__)
             # application_path = os.path.dirname(app_full_path)
-            application_path = os.path.dirname(sys.executable)
-            # application_path = os.getcwd()
+            # application_path = os.path.dirname(sys.executable)
+            application_path = os.getcwd()
             running_mode = 'Non-interactive'
         except NameError:
             application_path = os.getcwd()
@@ -53,7 +53,7 @@ def main(database, dsn):
     print(f'application_path={application_path}')
     # Read config file
     config = configparser.ConfigParser()
-    config_file = application_path + '/../config.ini'
+    config_file = application_path + '/config.ini'
     config.read(config_file)
     # dsn = config['Datasource']['dsn']
     model = config['Calibration']['model']
@@ -84,7 +84,7 @@ def main(database, dsn):
 
     # Set up logging
     start = timer()
-    log_file = application_path + '/../log.txt'
+    log_file = application_path + '/log.txt'
     logging.basicConfig(filename=log_file, level=logging.DEBUG)
     handler = logging.StreamHandler()
     logger = logging.getLogger()
@@ -98,7 +98,7 @@ def main(database, dsn):
     # Load duplicate reports
     logging.info(f'\n>> Querying duplicate reports table ... ({time.ctime()})')
     duplicates_table = '[Duplicate Reports]'
-    duplicate_reports_query = open(application_path + '/preprocessing/sql/duplicate_reports.sql').read().format(
+    duplicate_reports_query = open(application_path + '/src/preprocessing/sql/duplicate_reports.sql').read().format(
         database, duplicates_table, database, duplicates_table)  # Set database and table names for query here
     duplicate_reports = pd.read_sql(sql=duplicate_reports_query, con=engine)
     duplicate_reports['ProjectID'] = database
@@ -111,7 +111,7 @@ def main(database, dsn):
     # Load vendor reports
     logging.info(f'\n>> Querying invoices table ... ({time.ctime()})')
     invoices_table = 'invoice'
-    vendor_profiles_query = open(application_path + '/preprocessing/sql/vendor_profiles.sql').read().format(
+    vendor_profiles_query = open(application_path + '/src/preprocessing/sql/vendor_profiles.sql').read().format(
         database, invoices_table, database, invoices_table)  # Set database and table names for query here
     vendor_profiles = pd.read_sql(sql=vendor_profiles_query, con=engine)
     vendor_profiles['ProjectID'] = database
@@ -123,7 +123,7 @@ def main(database, dsn):
 
     # Load groups count profiles
     logging.info(f'\n>> Loading report count profiles ... ({time.ctime()})')
-    count_profiles_query = open(application_path + '/preprocessing/sql/count_profiles.sql').read().format(
+    count_profiles_query = open(application_path + '/src/preprocessing/sql/count_profiles.sql').read().format(
         database, duplicates_table, database, duplicates_table)  # Set database and table names for query here
     count_profiles = pd.read_sql(sql=count_profiles_query, con=engine)
     count_profiles['ProjectID'] = database
@@ -243,7 +243,7 @@ def main(database, dsn):
     correlations = scoring_data.corr()
 
     # Load calibrated model
-    saved_model = application_path + '/savedmodels/' + model
+    saved_model = application_path + '/src/savedmodels/' + model
     logging.info(
         f'\nStep 3 of 6: Scoring data with pre-calibrated XGBoost model "{saved_model}"... ({time.ctime()})\n')
     clf = pickle.load(open(saved_model, 'rb'))
