@@ -3,7 +3,7 @@ import click
 
 
 @click.command()
-@click.option('--database', default='RevenewSPRtest')
+@click.option('--database', prompt='\nPlease enter a database for SPR scoring')
 def main(database):
     # Import packages
     import os
@@ -270,7 +270,7 @@ def main(database):
 
     # Create score data frame
     df_scores = pd.DataFrame({
-        'Score': y_prob[:, 1],
+        'Score': y_prob.Prob_Claim,
         'ScoreTierA': y_pred.map({
             'Below 0.40': 6,
             '0.40-0.49': 5,
