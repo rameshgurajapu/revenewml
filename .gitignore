@@ -1,10 +1,11 @@
 __pycache__/
-\.egg-info/
 \.DS_Store
 \.idea/
 build/
 dist/
 /**/*.pyc
+revenewML.egg-info
 /**/*.parquet
 /**/*.csv
+/**/*.txt
 /**/*.txt

@@ -4,7 +4,8 @@ import click
 
 @click.command()
 @click.option('--database', prompt='\nPlease enter a database for SPR scoring')
-def main(database):
+@click.option('--dsn', prompt='\nPlease enter ODBC data source name (DSN)')
+def main(database, dsn):
     # Import packages
     import os
     import sys
@@ -41,19 +42,20 @@ def main(database):
         running_mode = 'Frozen/executable'
     else:
         try:
-            app_full_path = os.path.realpath(__file__)
-            application_path = os.path.dirname(app_full_path)
+            # app_full_path = os.path.realpath(__file__)
+            # application_path = os.path.dirname(app_full_path)
+            application_path = os.path.dirname(sys.executable)
+            # application_path = os.getcwd()
             running_mode = 'Non-interactive'
         except NameError:
             application_path = os.getcwd()
-            # application_path = '/Users/mj/Desktop/code/revenewml/src'
             running_mode = 'Interactive'
 
     # Read config file
     config = configparser.ConfigParser()
     config_file = application_path + '/../config.ini'
     config.read(config_file)
-    dsn = config['Datasource']['dsn']
+    # dsn = config['Datasource']['dsn']
     model = config['Calibration']['model']
 
     # Create connection strings
@@ -69,16 +71,16 @@ def main(database):
         # isolation_level="AUTOCOMMIT",
     )
 
-    # # Debug settings for database connection
-    # host = '208.43.250.18'
-    # port = '51949'
-    # user = 'sa'
-    # password = 'Aviana$92821'
-    # database = 'RevenewSPRtest'
-    # driver = '/usr/local/Cellar/freetds/1.1.11/lib/libtdsodbc.0.so'
-    # cnxn = f"mssql+pyodbc://{user}:{password}@{host}:{port}/{database}?driver={driver}"
-    # engine = create_engine(cnxn)
-    # engine.connect()
+    # Debug settings for database connection
+    host = '208.43.250.18'
+    port = '51949'
+    user = 'sa'
+    password = 'Aviana$92821'
+    database = 'RevenewSPRtest'
+    driver = '/usr/local/Cellar/freetds/1.1.11/lib/libtdsodbc.0.so'
+    cnxn = f'mssql+pyodbc://{user}:{password}@{host}:{port}/{database}?driver={driver}'
+    engine = create_engine(cnxn)
+    engine.connect()
 
     # Set up logging
     start = timer()
