@@ -1,0 +1,3 @@
+include config.ini
+include src/savedmodels/*.dat
+include src/preprocessing/*.sql

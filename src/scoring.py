@@ -50,7 +50,7 @@ def main(database, dsn):
         except NameError:
             application_path = os.getcwd()
             running_mode = 'Interactive'
-
+    print(f'application_path={application_path}')
     # Read config file
     config = configparser.ConfigParser()
     config_file = application_path + '/../config.ini'
