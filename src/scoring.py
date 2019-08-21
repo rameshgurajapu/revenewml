@@ -5,7 +5,7 @@ import click
 @click.command()
 @click.option('--database', default='RevenewSPRtest')
 def main(database):
-    # Import packages TODO: force user to enter database param
+    # Import packages
     import os
     import sys
     import shap
@@ -32,6 +32,7 @@ def main(database):
     try:
         database
     except:
+        # TODO: force user to enter database param
         database = 'RevenewSPRtest'
 
     # Get application path
@@ -62,8 +63,8 @@ def main(database):
     engine = create_engine(
         cnxn_str,
         fast_executemany=True,
-        echo=True,
-        echo_pool=False,
+        # echo=True,
+        # echo_pool=False,
         # implicit_returning=False,
         # isolation_level="AUTOCOMMIT",
     )
