@@ -1,11 +1,10 @@
-__pycache__/
-\.DS_Store
+/**/__pycache__/
+revenewML.egg-info/
 \.idea/
 build/
 dist/
+\.DS_Store
 /**/*.pyc
-revenewML.egg-info
 /**/*.parquet
 /**/*.csv
-/**/*.txt
 /**/*.txt

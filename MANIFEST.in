@@ -1,3 +1,4 @@
 include config.ini
+include LICENSE
 include src/savedmodels/*.dat
 include src/preprocessing/*.sql
