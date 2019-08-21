@@ -33,7 +33,6 @@ def main(database):
     try:
         database
     except:
-        # TODO: force user to enter database param
         database = 'RevenewSPRtest'
 
     # Get application path
