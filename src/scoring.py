@@ -52,7 +52,7 @@ def main(database):
     # Read config file
     config = configparser.ConfigParser()
     config_file = application_path + '/../config.ini'
-    config.read(config_file)
+    config.read('/../config.ini')
     dsn = config['Datasource']['dsn']
     model = config['Calibration']['model']
 
