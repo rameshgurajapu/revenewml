@@ -12,8 +12,8 @@ def main(database):
     import time
     import pickle
     import logging
-    import numpy as np
     import configparser
+    import numpy as np
     import pandas as pd
     from tqdm import tqdm
     from sqlalchemy import create_engine
@@ -45,8 +45,8 @@ def main(database):
             application_path = os.path.dirname(app_full_path)
             running_mode = 'Non-interactive'
         except NameError:
-            # application_path = os.getcwd()
-            application_path = '/Users/mj/Desktop/code/revenewml/src'
+            application_path = os.getcwd()
+            # application_path = '/Users/mj/Desktop/code/revenewml/src'
             running_mode = 'Interactive'
 
     # Read config file
@@ -69,16 +69,16 @@ def main(database):
         # isolation_level="AUTOCOMMIT",
     )
 
-    # Debug settings for database connection
-    host = '208.43.250.18'
-    port = '51949'
-    user = 'sa'
-    password = 'Aviana$92821'
-    database = 'RevenewSPRtest'
-    driver = '/usr/local/Cellar/freetds/1.1.11/lib/libtdsodbc.0.so'
-    cnxn = f"mssql+pyodbc://{user}:{password}@{host}:{port}/{database}?driver={driver}"
-    engine = create_engine(cnxn)
-    engine.connect()
+    # # Debug settings for database connection
+    # host = '208.43.250.18'
+    # port = '51949'
+    # user = 'sa'
+    # password = 'Aviana$92821'
+    # database = 'RevenewSPRtest'
+    # driver = '/usr/local/Cellar/freetds/1.1.11/lib/libtdsodbc.0.so'
+    # cnxn = f"mssql+pyodbc://{user}:{password}@{host}:{port}/{database}?driver={driver}"
+    # engine = create_engine(cnxn)
+    # engine.connect()
 
     # Set up logging
     start = timer()
