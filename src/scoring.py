@@ -49,10 +49,12 @@ def main(database):
             # application_path = '/Users/mj/Desktop/code/revenewml/src'
             running_mode = 'Interactive'
 
+    application_path = os.getcwd()
+
     # Read config file
     config = configparser.ConfigParser()
     config_file = application_path + '/../config.ini'
-    config.read('/../config.ini')
+    config.read(config_file)
     dsn = config['Datasource']['dsn']
     model = config['Calibration']['model']
 
