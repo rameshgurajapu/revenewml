@@ -61,26 +61,24 @@ def main(database, dsn):
     # Create connection strings
     cnxn_str = f'mssql+pyodbc://@{dsn}'
 
+    # Debug settings for database connection
+    host = '208.43.250.18'
+    port = '51949'
+    user = 'sa'
+    password = 'Aviana$92821'
+    database = 'RevenewSPRtest'
+    driver = '/usr/local/Cellar/freetds/1.1.11/lib/libtdsodbc.0.so'
+    cnxn_str = f'mssql+pyodbc://{user}:{password}@{host}:{port}/{database}?driver={driver}'
+
     # Make database connection engine
     engine = create_engine(
         cnxn_str,
         fast_executemany=True,
-        # echo=True,
-        # echo_pool=False,
+        echo=True,
+        echo_pool=False,
         # implicit_returning=False,
         # isolation_level="AUTOCOMMIT",
     )
-
-    # # Debug settings for database connection
-    # host = '208.43.250.18'
-    # port = '51949'
-    # user = 'sa'
-    # password = 'Aviana$92821'
-    # database = 'RevenewSPRtest'
-    # driver = '/usr/local/Cellar/freetds/1.1.11/lib/libtdsodbc.0.so'
-    # cnxn = f'mssql+pyodbc://{user}:{password}@{host}:{port}/{database}?driver={driver}'
-    # engine = create_engine(cnxn)
-    # engine.connect()
 
     # Set up logging
     start = timer()
@@ -254,8 +252,8 @@ def main(database, dsn):
                       left_index=True, right_index=True)
 
     # Set score equal to zero if claim already exists
-    y_prob.loc[y_prob.AmountNet__NETONE_Mean > 0, 'Prob_Claim'] = 0
-    y_prob.loc[y_prob.AmountNet__NETZERO_Mean > 0, 'Prob_Claim'] = 0
+    y_prob.loc[y_prob.AmountNet__NETONE_Mean > 0, 'Prob_Claim'] = 0.0
+    y_prob.loc[y_prob.AmountNet__NETZERO_Mean > 0, 'Prob_Claim'] = 0.0
 
     # Predicted classes
     y_pred = pd.cut(y_prob.Prob_Claim, bins=[0.0, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0], right=True,
