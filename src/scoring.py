@@ -29,6 +29,7 @@ def main(database):
     # Set global options
     os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'  # Necessary on Mac
     np.seterr(all='ignore')  # Suppresses warning messages about invalid log transforms
+    sys.path.append('../')
     try:
         database
     except:
@@ -48,8 +49,6 @@ def main(database):
             application_path = os.getcwd()
             # application_path = '/Users/mj/Desktop/code/revenewml/src'
             running_mode = 'Interactive'
-
-    application_path = os.getcwd()
 
     # Read config file
     config = configparser.ConfigParser()
