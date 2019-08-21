@@ -256,7 +256,7 @@ def main(database):
     y_prob.loc[y_prob.AmountNet__NETZERO_Mean > 0, 'Prob_Claim'] = 0
 
     # Predicted classes
-    y_pred = pd.cut(y_prob[:, 1], bins=[0.0, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0], right=True,
+    y_pred = pd.cut(y_prob.Prob_Claim, bins=[0.0, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0], right=True,
                     labels=['Below 0.40', '0.40-0.49', '0.50-0.59', '0.60-0.69', '0.70-0.79', '0.80-1.00'])
 
     # Configure the model-explaining algorithm
