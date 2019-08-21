@@ -69,16 +69,16 @@ def main(database):
         # isolation_level="AUTOCOMMIT",
     )
 
-    # # Debug settings for database connection
-    # host = '208.43.250.18'
-    # port = '51949'
-    # user = 'sa'
-    # password = 'Aviana$92821'
-    # database = 'RevenewSPRtest'
-    # driver = '/usr/local/Cellar/freetds/1.1.11/lib/libtdsodbc.0.so'
-    # cnxn = f"mssql+pyodbc://{user}:{password}@{host}:{port}/{database}?driver={driver}"
-    # engine = create_engine(cnxn)
-    # engine.connect()
+    # Debug settings for database connection
+    host = '208.43.250.18'
+    port = '51949'
+    user = 'sa'
+    password = 'Aviana$92821'
+    database = 'RevenewSPRtest'
+    driver = '/usr/local/Cellar/freetds/1.1.11/lib/libtdsodbc.0.so'
+    cnxn = f"mssql+pyodbc://{user}:{password}@{host}:{port}/{database}?driver={driver}"
+    engine = create_engine(cnxn)
+    engine.connect()
 
     # Set up logging
     start = timer()
@@ -247,9 +247,13 @@ def main(database):
     clf = pickle.load(open(saved_model, 'rb'))
 
     # Predicted probabilities
-    y_prob = clf.predict_proba(scoring_data)
+    y_prob = pd.merge(scoring_data[['AmountNet__NETONE_Mean', 'AmountNet__NETZERO_Mean']].reset_index(),
+                      pd.Series(clf.predict_proba(scoring_data)[:, 1], name='Prob_Claim'),
+                      left_index=True, right_index=True)
 
-    # TODO: Set score = 0 if (AmountNet__NETONE or AmountNet__NETZERO) == 1
+    # Set score equal to zero if claim already exists
+    y_prob.loc[y_prob.AmountNet__NETONE_Mean > 0, 'Prob_Claim'] = 0
+    y_prob.loc[y_prob.AmountNet__NETZERO_Mean > 0, 'Prob_Claim'] = 0
 
     # Predicted classes
     y_pred = pd.cut(y_prob[:, 1], bins=[0.0, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0], right=True,
