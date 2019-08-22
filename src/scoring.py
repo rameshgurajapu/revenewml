@@ -31,42 +31,25 @@ def main(database, dsn):
     os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'  # Necessary on Mac
     np.seterr(all='ignore')  # Suppresses warning messages about invalid log transforms
     sys.path.append('../')
-    try:
-        database
-    except:
-        database = 'RevenewSPRtest'
 
     # Get application path
-    if getattr(sys, 'frozen', False):
-        application_path = os.path.dirname(sys.executable)
-        running_mode = 'Frozen/executable'
-    else:
-        try:
-            # app_full_path = os.path.realpath(__file__)
-            # application_path = os.path.dirname(app_full_path)
-            # application_path = os.path.dirname(sys.executable)
-            application_path = os.getcwd()
-            running_mode = 'Non-interactive'
-        except NameError:
-            application_path = os.getcwd()
-            running_mode = 'Interactive'
-    print(f'application_path={application_path}')
+    application_path = os.getcwd()
+
     # Read config file
     config = configparser.ConfigParser()
     config_file = application_path + '/config.ini'
     config.read(config_file)
-    # dsn = config['Datasource']['dsn']
     model = config['Calibration']['model']
 
     # Create connection strings
-    cnxn_str = f'mssql+pyodbc://@{dsn}'
+    cnxn_str = f'mssql+pyodbc://@{dsn}\{database}'
 
     # Make database connection engine
     engine = create_engine(
         cnxn_str,
         fast_executemany=True,
         echo=True,
-        echo_pool=False,
+        # echo_pool=False,
         # implicit_returning=False,
         # isolation_level="AUTOCOMMIT",
     )
@@ -296,7 +279,7 @@ def main(database, dsn):
 
     # Set database table
     table_name = 'ModelScores'
-    df_output.to_sql(name=table_name, con=engine, if_exists='replace', method='multi', chunksize=10)
+    df_output.to_sql(name=table_name, con=engine, if_exists='append', method='multi')
 
     # Stop timer
     end = timer()
