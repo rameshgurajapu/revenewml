@@ -49,7 +49,7 @@ def main(database, dsn):
         cnxn_str,
         fast_executemany=True,
         echo=True,
-        # echo_pool=False,
+        echo_pool=False,
         # implicit_returning=False,
         # isolation_level="AUTOCOMMIT",
     )
@@ -283,7 +283,7 @@ def main(database, dsn):
     schema = f'{database}.dbo'
 
     # Write to SQL database
-    df_output.to_sql(name=table_name, con=engine, if_exists='append', method='multi', schema=schema)
+    df_output.to_sql(name=table_name, con=engine, if_exists='append', schema=schema)
 
     # Stop timer
     end = timer()
