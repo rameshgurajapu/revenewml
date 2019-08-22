@@ -41,10 +41,8 @@ def main(database, dsn):
     config.read(config_file)
     model = config['Calibration']['model']
 
-    dsn_db = f'{dsn}\{database}'
-
     # Create connection strings
-    cnxn_str = f'mssql+pyodbc://@{dsn_db}'
+    cnxn_str = f'mssql+pyodbc://@{dsn}/{database}'
 
     # Make database connection engine
     engine = create_engine(
