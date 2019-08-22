@@ -277,10 +277,11 @@ def main(database, dsn):
                  .merge(df_features, left_index=True, right_index=True)
                  )
 
+     # Set schema + database
+    schema = f'{database}.dbo'
+
     # Set database table
     table_name = 'ModelScores'
-
-    schema = f'{database}.dbo'
 
     # Write to SQL database
     df_output.to_sql(name=table_name, con=engine, if_exists='append', schema=schema)
