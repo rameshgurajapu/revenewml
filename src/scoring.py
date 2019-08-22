@@ -48,7 +48,7 @@ def main(database, dsn):
     engine = create_engine(
         cnxn_str,
         fast_executemany=True,
-        echo=True,
+        echo=False,
         echo_pool=False,
         # implicit_returning=False,
         # isolation_level="AUTOCOMMIT",
