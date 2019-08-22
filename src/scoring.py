@@ -42,7 +42,7 @@ def main(database, dsn):
     model = config['Calibration']['model']
 
     # Create connection strings
-    cnxn_str = f'mssql+pyodbc://@{dsn}/{database}'
+    cnxn_str = f'mssql+pyodbc://@{dsn}'
 
     # Make database connection engine
     engine = create_engine(
@@ -269,7 +269,7 @@ def main(database, dsn):
     # Output status to console
     logging.info(f'\nStep 6 of 6: Writing results to database ... ({time.ctime()})\n')
 
-    # Write to SQL database
+    # Create output table
     df_output = (scoring_data
                  .reset_index()
                  .loc[:, ['ProjectID', 'Report_Group_Flag']]
@@ -279,7 +279,11 @@ def main(database, dsn):
 
     # Set database table
     table_name = 'ModelScores'
-    df_output.to_sql(name=table_name, con=engine, if_exists='append', method='multi')
+
+    schema = f'{database}.dbo'
+
+    # Write to SQL database
+    df_output.to_sql(name=table_name, con=engine, if_exists='append', method='multi', schema=schema)
 
     # Stop timer
     end = timer()
