@@ -284,7 +284,7 @@ def main(database, dsn):
     table_name = 'ModelScores'
 
     # Write to SQL database
-    df_output.to_sql(name=table_name, con=engine, if_exists='append', schema=schema, index_label='ID')
+    df_output.to_sql(name=table_name, con=engine, if_exists='replace', schema=schema, index_label='ID')
 
     # Stop timer
     end = timer()
