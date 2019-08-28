@@ -47,7 +47,7 @@ def main(database, dsn):
     # Make database connection engine
     engine = create_engine(
         cnxn_str,
-        fast_executemany=True,
+        fast_executemany=False,
         echo=False,
         echo_pool=False,
         # implicit_returning=False,
