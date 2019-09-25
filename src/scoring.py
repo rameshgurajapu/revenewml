@@ -64,8 +64,8 @@ def main(database, dsn):
     logging.info('\n<============================================================================>')
     logging.info(f'\nApplication path: {application_path}')
     logging.info(f'\nCurrent working directory: {os.getcwd()}')
-    logging.info(f'\nApplication started ... ({time.ctime()})\n')
-    logging.info(f'Step 1 of 6: Loading raw data into memory ... ({time.ctime()})')
+    logging.info(f'\nApplication started ... ({time.ctime()})')
+    logging.info(f'\nStep 1 of 6: Loading raw data into memory ... ({time.ctime()})')
 
     # Load duplicate reports
     logging.info(f'\n>> Querying duplicate reports table ... ({time.ctime()})')
@@ -193,7 +193,7 @@ def main(database, dsn):
     del stds
 
     # Rollup to Report_Group_Flag level
-    logging.info(f'\n>> Rolling up to Report_Group_Flag level ... ({time.ctime()})\n')
+    logging.info(f'\n>> Rolling up to Report_Group_Flag level ... ({time.ctime()})')
     rollup2 = ['ProjectID', 'Report_Group_Flag']
     agg2 = agg1.groupby(rollup2).max()
 
@@ -217,7 +217,7 @@ def main(database, dsn):
     # Load calibrated model
     saved_model = application_path + '/src/savedmodels/' + model
     logging.info(
-        f'\nStep 3 of 6: Scoring data with pre-calibrated XGBoost model "{saved_model}"... ({time.ctime()})\n')
+        f'\nStep 3 of 6: Scoring data with pre-calibrated XGBoost model "{saved_model}"... ({time.ctime()})')
     clf = pickle.load(open(saved_model, 'rb'))
 
     # Predicted probabilities
@@ -239,7 +239,7 @@ def main(database, dsn):
         feature_dependence='tree_path_dependent')  # 'independent')
 
     # Explain the model's predictions using SHAP values
-    logging.info(f'Step 4 of 6: Interpreting individual feature effects ... ({time.ctime()})\n')
+    logging.info(f'\nStep 4 of 6: Interpreting individual feature effects ... ({time.ctime()})\n')
     shap_values = explainer.shap_values(scoring_data)
 
     # Create score data frame
