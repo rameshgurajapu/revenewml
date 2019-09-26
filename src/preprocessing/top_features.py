@@ -53,18 +53,17 @@ def get_top_features(ix, X, shap_values, correlations):
             break
     
     # Output data frame
-    try: 
-        return pd.DataFrame({
-            'Top1FeatureDesc': top_features[0],
-            'Top1FeatureDirection': shap_direction[0],
-            'Top2FeatureDesc': top_features[1],
-            'Top2FeatureDirection': shap_direction[1],
-            'Top3FeatureDesc': top_features[2],
-            'Top3FeatureDirection': shap_direction[2],
-            'Top4FeatureDesc': top_features[3],
-            'Top4FeatureDirection': shap_direction[3],
-            'Top5FeatureDesc': top_features[4],
-            'Top5FeatureDirection': shap_direction[4]
-        }, index=ix)  # Note: same index as original data for merging
-    except:
-        return pd.DataFrame()
+    outputdf = pd.DataFrame({
+        'Top1FeatureDesc': top_features[0],
+        'Top1FeatureDirection': shap_direction[0],
+        # 'Top2FeatureDesc': top_features[1],
+        # 'Top2FeatureDirection': shap_direction[1],
+        # 'Top3FeatureDesc': top_features[2],
+        # 'Top3FeatureDirection': shap_direction[2],
+        # 'Top4FeatureDesc': top_features[3],
+        # 'Top4FeatureDirection': shap_direction[3],
+        # 'Top5FeatureDesc': top_features[4],
+        # 'Top5FeatureDirection': shap_direction[4]
+    }, index=ix)  # Note: same index as original data for merging
+    
+    return outputdf
