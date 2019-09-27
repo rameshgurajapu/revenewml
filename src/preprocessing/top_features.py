@@ -44,13 +44,13 @@ def get_top_features(ix, X, shap_values, correlations):
 
     # Iterate through sorted features to find first set of 5 where all correlations < 0.9
     # while len(top_features) < 5:
-    for feature, direction in zip(df['feature_name'], df['shap_direction']):
-        corr_max = correlations.loc[top_features, feature].values.max()
-        # print(f'\nIndex is {i}\nFeature is {feature}\nDirection is {direction}\nMax correlation is {corr_max}\n')
-        if corr_max < 0.9:
-            top_features.append(feature)
-            shap_direction.append(direction)
-            break
+    # for feature, direction in zip(df['feature_name'], df['shap_direction']):
+    #     corr_max = correlations.loc[top_features, feature].values.max()
+    #     # print(f'\nIndex is {i}\nFeature is {feature}\nDirection is {direction}\nMax correlation is {corr_max}\n')
+    #     if corr_max < 0.9:
+    #         top_features.append(feature)
+    #         shap_direction.append(direction)
+    #         break
     
     # Output data frame
     outputdf = pd.DataFrame({
