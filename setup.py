@@ -17,6 +17,6 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        revenewML=src.scoring:main
+        revenewML=RevenewML.scoring:main
     ''',
 )

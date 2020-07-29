@@ -4,16 +4,16 @@ import logging
 import time
 import xgboost as xgb
 import pandas as pd
-import datatable as dt
+# import datatable as dt
 import numpy as np
 from sklearn.model_selection import PredefinedSplit
 from timeit import default_timer as timer
-from src.preprocessing.lists.sum_list import sum_list
-from src.preprocessing.lists.min_list import min_list
-from src.preprocessing.lists.max_list import max_list
-from src.preprocessing.lists.std_list import std_list
-from src.preprocessing.lists.mean_list import mean_list
-from src.preprocessing.lists.log_list import log_list
+from RevenewML.preprocessing.lists.sum_list import sum_list
+from RevenewML.preprocessing.lists.min_list import min_list
+from RevenewML.preprocessing.lists.max_list import max_list
+from RevenewML.preprocessing.lists.std_list import std_list
+from RevenewML.preprocessing.lists.mean_list import mean_list
+from RevenewML.preprocessing.lists.log_list import log_list
 
 # Global options
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
@@ -33,34 +33,35 @@ logging.info(f'\nCurrent working directory: {os.getcwd()}')
 logging.info(f'\nApplication started ... ({time.ctime()})\n')
 
 # Load calibration data
-# y = (pd.read_csv('src/flatfiles/Final Preprocessed For MichaelSampled Latest.txt', sep='\t')
+
+# y = (pd.read_csv('RevenewML/flatfiles/Final Preprocessed For MichaelSampled Latest.txt', sep='\t')
 #      .loc[:, ['ProjectID', 'Report_Group_Flag', 'Y_Has_Claim', 'Partition']]
 # )
-# y.to_parquet('src/flatfiles/Y_Calibration.parquet')
-y = pd.read_parquet('src/flatfiles/Y_Calibration.parquet')
+# y.to_parquet('RevenewML/flatfiles/Y_Calibration.parquet')
+y = pd.read_parquet('RevenewML/flatfiles/Y_Calibration.parquet')
 
 # count_profiles = (dt.fread('datasets/Count_Profiles_Calibration.csv', show_progress=True)
-count_profiles = (pd.read_parquet('src/flatfiles/Count_Profiles_Calibration.parquet')
+count_profiles = (pd.read_parquet('RevenewML/flatfiles/Count_Profiles_Calibration.parquet')
                   # .to_pandas()
                   .merge(y, on=['ProjectID', 'Report_Group_Flag'])
                   .drop(columns=['Y_Has_Claim', 'Partition'])
                   )
-# count_profiles.to_parquet('src/flatfiles/Count_Profiles_Calibration.parquet')
+# count_profiles.to_parquet('RevenewML/flatfiles/Count_Profiles_Calibration.parquet')
 
 # duplicate_reports = (dt.fread('datasets/Duplicate_Reports_Calibration.csv', show_progress=True)
-duplicate_reports = (pd.read_parquet('src/flatfiles/Duplicate_Reports_Calibration.parquet')
+duplicate_reports = (pd.read_parquet('RevenewML/flatfiles/Duplicate_Reports_Calibration.parquet')
                      # .to_pandas()
                      .merge(y, on=['ProjectID', 'Report_Group_Flag'])
                      .drop(columns=['Y_Has_Claim', 'Partition'])
                      # ).sample(100000)
                      )
-# duplicate_reports.to_parquet('src/flatfiles/Duplicate_Reports_Calibration.parquet')
+# duplicate_reports.to_parquet('RevenewML/flatfiles/Duplicate_Reports_Calibration.parquet')
 
 # vendor_profiles = (dt.fread('datasets/Vendor_Profiles_Calibration.csv', show_progress=True)
 #                    .to_pandas()
 #                    )
-# vendor_profiles.to_parquet('src/flatfiles/Vendor_Profiles_Calibration.parquet')
-vendor_profiles = pd.read_parquet('src/flatfiles/Vendor_Profiles_Calibration.parquet')
+# vendor_profiles.to_parquet('RevenewML/flatfiles/Vendor_Profiles_Calibration.parquet')
+vendor_profiles = pd.read_parquet('RevenewML/flatfiles/Vendor_Profiles_Calibration.parquet')
 
 # Average across vendors
 logging.info('\n>> Averaging across vendors ... ({})'.format(time.ctime()))
@@ -199,7 +200,7 @@ for feature in log_list:
 
 # Merge features and target
 final = agg2.merge(y, on=['ProjectID', 'Report_Group_Flag'])
-final.to_csv('src/flatfiles/final_data.csv', header=True, index=False)
+final.to_csv('RevenewML/flatfiles/final_data.csv', header=True, index=False)
 
 # Create feature matrix
 X = final.drop(columns=['Y_Has_Claim', 'Partition', 'ProjectID', 'Report_Group_Flag'])
@@ -232,7 +233,7 @@ calibration_date = time.strftime('%Y%m%d')
 model_name = 'XGBoostModel_' + calibration_date + '.dat'
 
 # Output serialized model to use for scoring
-pickle.dump(clf, open('src/savedmodels/' + model_name, 'wb'))
+pickle.dump(clf, open('RevenewML/savedmodels/' + model_name, 'wb'))
 
 # Stop timer
 end = timer()

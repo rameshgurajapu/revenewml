@@ -1,11 +1,38 @@
 #!/usr/bin/env python
-import click
+import pandas as pd
+from gooey import Gooey, GooeyParser
+from sqlalchemy import create_engine
+from tqdm import tqdm
+import pyspark
 
+spark = pyspark.sql.SparkSession.Builder().getOrCreate()
+conn_str = 'mssql://@spr'
+engine = create_engine(conn_str, echo=True)
+con = engine.connect()
 
-@click.command()
-@click.option('--database', prompt='\nPlease enter a database for SPR scoring')
-@click.option('--dsn', prompt='\nPlease enter ODBC data source name (DSN)')
-def main(database, dsn):
+file_name = 'C:\\Users\\MichaelJohnson\\AvianaML_dbo_Duplicate_Reports.csv\\AvianaML_dbo_Duplicate_Reports.csv'
+duplicate_reports = spark.read.csv(file_name, header=True, inferSchema=True, )
+df = duplicate_reports.sample(fraction=.0001).toPandas()
+df.to_sql('Duplicate Reports', con, if_exists='replace', index=False)
+
+file_name = 'C:\\Users\\MichaelJohnson\\AvianaML_dbo_invoice.csv\\AvianaML_dbo_invoice.csv'
+invoice = spark.read.csv(file_name, header=True, inferSchema=True,)
+df = invoice.sample(fraction=.0001).toPandas()
+df.to_sql('invoice', con, if_exists='replace', index=False)
+
+@Gooey(program_name='Revenew Supplier Payment Review')
+def main():
+    parser = GooeyParser()
+    parser.add_argument('database', metavar='Database', )
+    parser.add_argument('dsn', metavar='DSN')
+
+    # Parse User inputs
+    args = parser.parse_args()
+    dsn = args.dsn
+    database = args.database
+    # username = args.username
+    # password = args.password
+
     # Import packages
     import os
     import sys
@@ -16,16 +43,16 @@ def main(database, dsn):
     import configparser
     import numpy as np
     import pandas as pd
-    from tqdm import tqdm
     from sqlalchemy import create_engine
     from timeit import default_timer as timer
-    from src.preprocessing.lists.sum_list import sum_list
-    from src.preprocessing.lists.min_list import min_list
-    from src.preprocessing.lists.max_list import max_list
-    from src.preprocessing.lists.std_list import std_list
-    from src.preprocessing.lists.mean_list import mean_list
-    from src.preprocessing.lists.log_list import log_list
-    from src.preprocessing.top_features import get_top_features
+
+    from RevenewML.preprocessing.lists.sum_list import sum_list
+    from RevenewML.preprocessing.lists.min_list import min_list
+    from RevenewML.preprocessing.lists.max_list import max_list
+    from RevenewML.preprocessing.lists.std_list import std_list
+    from RevenewML.preprocessing.lists.mean_list import mean_list
+    from RevenewML.preprocessing.lists.log_list import log_list
+    from RevenewML.preprocessing.top_features import get_top_features
 
     # Set global options
     os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'  # Necessary on Mac
@@ -41,26 +68,31 @@ def main(database, dsn):
     config.read(config_file)
     model = config['Calibration']['model']
 
-    # Create connection strings
-    cnxn_str = f'mssql+pyodbc://@{dsn}'
+    try:
+        dsn
+    except NameError:
+        dsn = config['Datasource']['dsn']
 
-    # Make database connection engine
-    engine = create_engine(
-        cnxn_str,
-        fast_executemany=False,
-        echo=False,
-        echo_pool=False,
-        # implicit_returning=False,
-        # isolation_level="AUTOCOMMIT",
-    )
+    try:
+        database
+    except NameError:
+        database = config['Datasource']['database']
+
+    # Create connection strings
+    conn_str = f'mssql://@{dsn}'
+    conn_prm = dict(fast_executemany=True, isolation_level='AUTOCOMMIT', echo=True, )
+
+    engine = create_engine(conn_str, **conn_prm)
+    con = engine
 
     # Set up logging
     start = timer()
-    log_file = application_path + '/log.txt'
+    log_file = 'log.txt'
     logging.basicConfig(filename=log_file, level=logging.DEBUG)
     handler = logging.StreamHandler()
     logger = logging.getLogger()
     logger.addHandler(handler)
+
     logging.info('\n<============================================================================>')
     logging.info(f'\nApplication path: {application_path}')
     logging.info(f'\nCurrent working directory: {os.getcwd()}')
@@ -69,8 +101,9 @@ def main(database, dsn):
 
     # Load duplicate reports
     logging.info(f'\n>> Querying duplicate reports table ... ({time.ctime()})')
-    duplicates_table = '[Duplicate Reports]'
-    duplicate_reports_query = open(application_path + '/src/preprocessing/sql/duplicate_reports.sql').read().format(
+    duplicates_table = '"Duplicate Reports"'
+    duplicate_reports_query = open(
+        application_path + '/RevenewML/preprocessing/sql/duplicate_reports.sql').read().format(
         database, duplicates_table, database, duplicates_table)  # Set database and table names for query here
     duplicate_reports = pd.read_sql(sql=duplicate_reports_query, con=engine)
     duplicate_reports['ProjectID'] = database
@@ -83,7 +116,7 @@ def main(database, dsn):
     # Load vendor reports
     logging.info(f'\n>> Querying invoices table ... ({time.ctime()})')
     invoices_table = 'invoice'
-    vendor_profiles_query = open(application_path + '/src/preprocessing/sql/vendor_profiles.sql').read().format(
+    vendor_profiles_query = open(application_path + '/RevenewML/preprocessing/sql/vendor_profiles.sql').read().format(
         database, invoices_table, database, invoices_table)  # Set database and table names for query here
     vendor_profiles = pd.read_sql(sql=vendor_profiles_query, con=engine)
     vendor_profiles['ProjectID'] = database
@@ -95,7 +128,7 @@ def main(database, dsn):
 
     # Load groups count profiles
     logging.info(f'\n>> Loading report count profiles ... ({time.ctime()})')
-    count_profiles_query = open(application_path + '/src/preprocessing/sql/count_profiles.sql').read().format(
+    count_profiles_query = open(application_path + '/RevenewML/preprocessing/sql/count_profiles.sql').read().format(
         database, duplicates_table, database, duplicates_table)  # Set database and table names for query here
     count_profiles = pd.read_sql(sql=count_profiles_query, con=engine)
     count_profiles['ProjectID'] = database
@@ -215,7 +248,7 @@ def main(database, dsn):
     correlations = scoring_data.corr()
 
     # Load calibrated model
-    saved_model = application_path + '/src/savedmodels/' + model
+    saved_model = application_path + '/RevenewML/savedmodels/' + model
     logging.info(
         f'\nStep 3 of 6: Scoring data with pre-calibrated XGBoost model "{saved_model}"... ({time.ctime()})')
     clf = pickle.load(open(saved_model, 'rb'))
@@ -277,7 +310,7 @@ def main(database, dsn):
                  .merge(df_features, left_index=True, right_index=True)
                  )
 
-     # Set schema + database
+    # Set schema + database
     schema = f'{database}.dbo'
 
     # Set database table
