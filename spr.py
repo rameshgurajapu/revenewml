@@ -246,7 +246,7 @@ def main():
 
     # Predicted probabilities
     y_prob = pd.merge(scoring_data[['AmountNet__NETONE_Mean', 'AmountNet__NETZERO_Mean']].reset_index(),
-                      pd.Series(clf.predict_proba(scoring_data)[:, 1], name='Prob_Claim'),
+                      pd.Series(clf.predict_proba(scoring_data, validate_features=False)[:, 1], name='Prob_Claim'),
                       left_index=True, right_index=True)
 
     # Set score equal to zero if claim already exists
