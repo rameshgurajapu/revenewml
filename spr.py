@@ -27,6 +27,7 @@ def main():
     import pandas as pd
     from sqlalchemy import create_engine
     from timeit import default_timer as timer
+    from tqdm.auto import tqdm
 
     from RevenewML.preprocessing.lists.sum_list import sum_list
     from RevenewML.preprocessing.lists.min_list import min_list
@@ -62,9 +63,9 @@ def main():
 
     # Create connection strings
     conn_str = f'mssql://@{dsn}'
-    conn_prm = dict(fast_executemany=True, isolation_level='AUTOCOMMIT', echo=False, )
+    # conn_prm = dict(fast_executemany=True, isolation_level='AUTOCOMMIT', echo=False, )
 
-    engine = create_engine(conn_str, **conn_prm)
+    engine = create_engine(conn_str)
     # con = engine
 
     # Set up logging
@@ -241,7 +242,7 @@ def main():
     # Load calibrated model
     saved_model = application_path + '/RevenewML/savedmodels/' + model
     logging.info(
-        f'\nStep 3 of 6: Scoring data with pre-calibrated XGBoost model "{saved_model}"... ({time.ctime()})')
+        f'\nStep 3 of 6: Scoring data with pre-calibrated XGBoost model... ({time.ctime()})')
     clf = pickle.load(open(saved_model, 'rb'))
 
     # Predicted probabilities
