@@ -1,29 +1,11 @@
 #!/usr/bin/env python
-import pandas as pd
 from gooey import Gooey, GooeyParser
-from sqlalchemy import create_engine
-from tqdm import tqdm
-import pyspark
 
-spark = pyspark.sql.SparkSession.Builder().getOrCreate()
-conn_str = 'mssql://@spr'
-engine = create_engine(conn_str, echo=True)
-con = engine.connect()
-
-file_name = 'C:\\Users\\MichaelJohnson\\AvianaML_dbo_Duplicate_Reports.csv\\AvianaML_dbo_Duplicate_Reports.csv'
-duplicate_reports = spark.read.csv(file_name, header=True, inferSchema=True, )
-df = duplicate_reports.sample(fraction=.0001).toPandas()
-df.to_sql('Duplicate Reports', con, if_exists='replace', index=False)
-
-file_name = 'C:\\Users\\MichaelJohnson\\AvianaML_dbo_invoice.csv\\AvianaML_dbo_invoice.csv'
-invoice = spark.read.csv(file_name, header=True, inferSchema=True,)
-df = invoice.sample(fraction=.0001).toPandas()
-df.to_sql('invoice', con, if_exists='replace', index=False)
 
 @Gooey(program_name='Revenew Supplier Payment Review')
 def main():
     parser = GooeyParser()
-    parser.add_argument('database', metavar='Database', )
+    parser.add_argument('database', metavar='SPR Client')
     parser.add_argument('dsn', metavar='DSN')
 
     # Parse User inputs
@@ -80,10 +62,10 @@ def main():
 
     # Create connection strings
     conn_str = f'mssql://@{dsn}'
-    conn_prm = dict(fast_executemany=True, isolation_level='AUTOCOMMIT', echo=True, )
+    conn_prm = dict(fast_executemany=True, isolation_level='AUTOCOMMIT', echo=False, )
 
     engine = create_engine(conn_str, **conn_prm)
-    con = engine
+    # con = engine
 
     # Set up logging
     start = timer()
@@ -101,10 +83,11 @@ def main():
 
     # Load duplicate reports
     logging.info(f'\n>> Querying duplicate reports table ... ({time.ctime()})')
-    duplicates_table = '"Duplicate Reports"'
+    duplicates_table = '[Duplicate Reports]'
     duplicate_reports_query = open(
         application_path + '/RevenewML/preprocessing/sql/duplicate_reports.sql').read().format(
-        database, duplicates_table, database, duplicates_table)  # Set database and table names for query here
+        database, database
+    )  # Set database and table names for query here
     duplicate_reports = pd.read_sql(sql=duplicate_reports_query, con=engine)
     duplicate_reports['ProjectID'] = database
     table_size = duplicate_reports.shape
@@ -117,7 +100,8 @@ def main():
     logging.info(f'\n>> Querying invoices table ... ({time.ctime()})')
     invoices_table = 'invoice'
     vendor_profiles_query = open(application_path + '/RevenewML/preprocessing/sql/vendor_profiles.sql').read().format(
-        database, invoices_table, database, invoices_table)  # Set database and table names for query here
+        database, database
+    )  # Set database and table names for query here
     vendor_profiles = pd.read_sql(sql=vendor_profiles_query, con=engine)
     vendor_profiles['ProjectID'] = database
     table_size = vendor_profiles.shape
@@ -129,7 +113,8 @@ def main():
     # Load groups count profiles
     logging.info(f'\n>> Loading report count profiles ... ({time.ctime()})')
     count_profiles_query = open(application_path + '/RevenewML/preprocessing/sql/count_profiles.sql').read().format(
-        database, duplicates_table, database, duplicates_table)  # Set database and table names for query here
+        database, database,
+    )  # Set database and table names for query here
     count_profiles = pd.read_sql(sql=count_profiles_query, con=engine)
     count_profiles['ProjectID'] = database
     table_size = count_profiles.shape
@@ -229,6 +214,10 @@ def main():
     logging.info(f'\n>> Rolling up to Report_Group_Flag level ... ({time.ctime()})')
     rollup2 = ['ProjectID', 'Report_Group_Flag']
     agg2 = agg1.groupby(rollup2).max()
+    agg2['Max_Abs_Amount_SDev'] = 0
+    agg2['Max_Abs_Amount_Mean'] = 0
+    agg2['Min_Abs_Amount_SDev'] = 0
+    agg2['Min_Abs_Amount_Mean'] = 0
 
     # Do log transform on selected variables
     for feature in log_list:
@@ -236,7 +225,9 @@ def main():
             log_feature = np.log10(agg2[feature])
             agg2['Log_' + feature] = log_feature
         except Exception as e:
-            print(e)
+            # print(e)
+            agg2['Log_' + feature] = 0
+
 
     # Output final data
     table_size = agg2.shape

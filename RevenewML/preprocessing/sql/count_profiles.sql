@@ -10,12 +10,14 @@ WITH counts AS (SELECT Report_Group_Flag,
                        count(DISTINCT [Payment Document Number]) AS Payment_Document_Number_Count,
                        count(DISTINCT [Gross Invoice Amount]) AS Gross_Invoice_Amount_Count,
                        count(DISTINCT [User Name]) AS User_Name_Count
-                FROM {}.dbo.{}
+               FROM {}.dbo.[Duplicate Reports]
+--                 FROM Revenew.dbo.[Duplicate Reports]
                 GROUP BY Report_Group_Flag, ReportGroup, ReportID),
      totals AS (SELECT Report_Group_Flag,
                        ReportGroup,
                        COUNT(*) AS Reports
-                FROM {}.dbo.{}
+               FROM {}.dbo.[Duplicate Reports]
+--                 FROM Revenew.dbo.[Duplicate Reports]
                 GROUP BY Report_Group_Flag, ReportGroup)
 SELECT counts.Report_Group_Flag,
        counts.ReportGroup,

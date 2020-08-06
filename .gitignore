@@ -9,4 +9,3 @@ dist/
 /**/*.csv
 /**/*.txt
 venv*
-python_Levenshtein-0.12.0-cp38-cp38-win_amd64.whl

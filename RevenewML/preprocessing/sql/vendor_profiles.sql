@@ -26,32 +26,32 @@ WITH invoice_level AS (SELECT [Vendor Number] AS Vendor_Number,
 
                               -- Amount Variables
                               [Gross Invoice Amount] AS Vendor_Gross_Invoice_Amount,
-                              IIF(cast([Gross Invoice Amount] AS NVARCHAR) LIKE '%1%', 1, 0) +
-                              IIF(cast([Gross Invoice Amount] AS NVARCHAR) LIKE '%2%', 1, 0) +
-                              IIF(cast([Gross Invoice Amount] AS NVARCHAR) LIKE '%3%', 1, 0) +
-                              IIF(cast([Gross Invoice Amount] AS NVARCHAR) LIKE '%4%', 1, 0) +
-                              IIF(cast([Gross Invoice Amount] AS NVARCHAR) LIKE '%5%', 1, 0) +
-                              IIF(cast([Gross Invoice Amount] AS NVARCHAR) LIKE '%6%', 1, 0) +
-                              IIF(cast([Gross Invoice Amount] AS NVARCHAR) LIKE '%7%', 1, 0) +
-                              IIF(cast([Gross Invoice Amount] AS NVARCHAR) LIKE '%8%', 1, 0) +
-                              IIF(cast([Gross Invoice Amount] AS NVARCHAR) LIKE '%9%', 1, 0) +
-                              IIF(cast([Gross Invoice Amount] AS NVARCHAR) LIKE '%0%', 1, 0)
+                              IIF(try_cast([Gross Invoice Amount] AS VARCHAR) LIKE '%1%', 1, 0) +
+                              IIF(try_cast([Gross Invoice Amount] AS VARCHAR) LIKE '%2%', 1, 0) +
+                              IIF(try_cast([Gross Invoice Amount] AS VARCHAR) LIKE '%3%', 1, 0) +
+                              IIF(try_cast([Gross Invoice Amount] AS VARCHAR) LIKE '%4%', 1, 0) +
+                              IIF(try_cast([Gross Invoice Amount] AS VARCHAR) LIKE '%5%', 1, 0) +
+                              IIF(try_cast([Gross Invoice Amount] AS VARCHAR) LIKE '%6%', 1, 0) +
+                              IIF(try_cast([Gross Invoice Amount] AS VARCHAR) LIKE '%7%', 1, 0) +
+                              IIF(try_cast([Gross Invoice Amount] AS VARCHAR) LIKE '%8%', 1, 0) +
+                              IIF(try_cast([Gross Invoice Amount] AS VARCHAR) LIKE '%9%', 1, 0) +
+                              IIF(try_cast([Gross Invoice Amount] AS VARCHAR) LIKE '%0%', 1, 0)
                                   AS Vendor_UniqueDigits_Gross_Invoice_Amount,
 
-                              IIF([Gross Invoice Amount] % 1 > 0, 1, 0) AS Vendor_HasFrac_Gross_Invoice_Amount,
-                              IIF([Gross Invoice Amount] % 10 > 0, 1, 0) AS Vendor_NotZeroEnding_Gross_Invoice_Amount,
+                              IIF(try_cast([Gross Invoice Amount] as NUMERIC) % 1 > 0, 1, 0) AS Vendor_HasFrac_Gross_Invoice_Amount,
+                              IIF(try_cast([Gross Invoice Amount] as NUMERIC) % 10 > 0, 1, 0) AS Vendor_NotZeroEnding_Gross_Invoice_Amount,
 
                               [Gross Invoice Amount Local] AS Vendor_Gross_Invoice_Amount_Local,
-                              IIF([Gross Invoice Amount Local] % 1 > 0, 1, 0) AS Vendor_HasFrac_Gross_Invoice_Amount_Local,
-                              IIF([Gross Invoice Amount Local] % 10 > 0, 1, 0) AS Vendor_NotZeroEnding_Gross_Invoice_Amount_Local,
+                              IIF(try_cast([Gross Invoice Amount Local] as NUMERIC) % 1 > 0, 1, 0) AS Vendor_HasFrac_Gross_Invoice_Amount_Local,
+                              IIF(try_cast([Gross Invoice Amount Local] as NUMERIC) % 10 > 0, 1, 0) AS Vendor_NotZeroEnding_Gross_Invoice_Amount_Local,
 
                               [Check Amount] AS Vendor_Check_Amount,
-                              IIF([Check Amount] % 1 > 0, 1, 0) AS Vendor_HasFrac_Check_Amount,
-                              IIF([Check Amount] % 10 > 0, 1, 0) AS Vendor_NotZeroEnding_Check_Amount,
+                              IIF(try_cast([Check Amount] as NUMERIC) % 1 > 0, 1, 0) AS Vendor_HasFrac_Check_Amount,
+                              IIF(try_cast([Check Amount] as NUMERIC) % 10 > 0, 1, 0) AS Vendor_NotZeroEnding_Check_Amount,
 
                               [Absolute Amount] AS Vendor_Absolute_Amount,
-                              IIF([Absolute Amount] % 1 > 0, 1, 0) AS Vendor_HasFrac_Absolute_Amount,
-                              IIF([Absolute Amount] % 10 > 0, 1, 0) AS Vendor_NotZeroEnding_Absolute_Amount,
+                              IIF(try_cast([Absolute Amount] as NUMERIC) % 1 > 0, 1, 0) AS Vendor_HasFrac_Absolute_Amount,
+                              IIF(try_cast([Absolute Amount] as NUMERIC) % 10 > 0, 1, 0) AS Vendor_NotZeroEnding_Absolute_Amount,
 
                               -- Spreads
                               MAX(try_cast([Document Number] AS BIGINT)) OVER ( PARTITION BY [Vendor Number]) -
@@ -64,7 +64,8 @@ WITH invoice_level AS (SELECT [Vendor Number] AS Vendor_Number,
                               MIN(try_cast([Voucher Number] AS BIGINT))
                                   OVER ( PARTITION BY [Vendor Number]) AS Vendor_Voucher_Num_Spread
 
-                       FROM {}.dbo.{} AS base_table
+                      FROM {}.dbo.invoice AS base_table
+--                        FROM Revenew.dbo.invoice AS base_table
                                 LEFT OUTER JOIN (
                            SELECT Vendor_Number,
                                   MF_DocType,
@@ -80,7 +81,8 @@ WITH invoice_level AS (SELECT [Vendor Number] AS Vendor_Number,
                                               [Document Type] AS MF_DocType,
                                               COUNT([Document Type]) AS DocType_Count
 
-                                       FROM {}.dbo.{} as base_table
+                                      FROM {}.dbo.invoice as base_table
+--                                        FROM Revenew.dbo.invoice as base_table
                                        WHERE [Document Type] IS NOT NULL
                                        GROUP BY [Vendor Number], [Document Type]
                                       ) t
