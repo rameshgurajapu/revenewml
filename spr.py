@@ -27,7 +27,6 @@ def main():
     import pandas as pd
     from sqlalchemy import create_engine
     from timeit import default_timer as timer
-    from tqdm.gui import tqdm
 
     from RevenewML.preprocessing.lists.sum_list import sum_list
     from RevenewML.preprocessing.lists.min_list import min_list
@@ -75,14 +74,13 @@ def main():
     logger = logging.getLogger()
     logger.addHandler(handler)
 
-    logging.info('\n<============================================================================>')
-    logging.info(f'\nApplication path: {application_path}')
-    logging.info(f'\nCurrent working directory: {os.getcwd()}')
+    # logging.info(f'\nApplication path: {application_path}')
+    # logging.info(f'\nCurrent working directory: {os.getcwd()}')
     logging.info(f'\nApplication started ... ({time.ctime()})')
-    logging.info(f'\nStep 1 of 6: Loading raw data into memory ... ({time.ctime()})')
+    logging.info(f'\nStep 1/6: Loading raw data into memory')
 
     # Load duplicate reports
-    logging.info(f'\n>> Querying duplicate reports table ... ({time.ctime()})')
+    # logging.info(f'\n\t>> Querying duplicate reports table')
     duplicates_table = '[Duplicate Reports]'
     duplicate_reports_query = open(
         application_path + '/RevenewML/preprocessing/sql/duplicate_reports.sql').read().format(
@@ -91,13 +89,11 @@ def main():
     duplicate_reports = pd.read_sql(sql=duplicate_reports_query, con=engine)
     duplicate_reports['ProjectID'] = database
     table_size = duplicate_reports.shape
-    logging.info(
-        f'\n>> Duplicate reports data in memory has {table_size[0]} rows and {table_size[1]} columns ... ({time.ctime()})'
-    )
+    # logging.info(f'\n\t\t{table_size[0]} rows, {table_size[1]} columns')
     duplicate_reports = duplicate_reports.fillna(0)
 
     # Load vendor reports
-    logging.info(f'\n>> Querying invoices table ... ({time.ctime()})')
+    # logging.info(f'\n\t>> Querying invoices table')
     invoices_table = 'invoice'
     vendor_profiles_query = open(application_path + '/RevenewML/preprocessing/sql/vendor_profiles.sql').read().format(
         database, database
@@ -105,33 +101,29 @@ def main():
     vendor_profiles = pd.read_sql(sql=vendor_profiles_query, con=engine)
     vendor_profiles['ProjectID'] = database
     table_size = vendor_profiles.shape
-    logging.info(
-        f'\n>> Vendor invoices data in memory has {table_size[0]} rows and {table_size[1]} columns ... ({time.ctime()})'
-    )
+    # logging.info(f'\n\t\t{table_size[0]} rows, {table_size[1]} columns')
     vendor_profiles = vendor_profiles.fillna(0)
 
     # Load groups count profiles
-    logging.info(f'\n>> Loading report count profiles ... ({time.ctime()})')
+    # logging.info(f'\n\t>> Loading report count profiles')
     count_profiles_query = open(application_path + '/RevenewML/preprocessing/sql/count_profiles.sql').read().format(
         database, database,
     )  # Set database and table names for query here
     count_profiles = pd.read_sql(sql=count_profiles_query, con=engine)
     count_profiles['ProjectID'] = database
     table_size = count_profiles.shape
-    logging.info(
-        f'\n>> Count profiles data in memory has {table_size[0]} rows and {table_size[1]} columns ... ({time.ctime()})'
-    )
+    # logging.info(f'\n\t\t{table_size[0]} rows, {table_size[1]} columns')
     count_profiles = count_profiles.fillna(0)
-    logging.info(f'\nStep 2 of 6: Assembling datasets for scoring ... ({time.ctime()})')
+    logging.info(f'\nStep 2/6: Assembling datasets for scoring')
 
     # Average across vendors
-    logging.info(f'\n>> Averaging across vendors ... ({time.ctime()})')
+    # logging.info(f'\n\t>> Averaging across vendors')
     vendor_means = (vendor_profiles
                     .groupby(['ProjectID', 'Vendor_Number'])
                     .mean()
                     .reset_index()
                     )
-    logging.info(f'\n>> Matching duplicate reports to vendor-level aggregates ... ({time.ctime()})')
+    # logging.info(f'\n\t>> Matching duplicate reports to vendor aggregates')
     df = duplicate_reports.merge(vendor_means, on=['ProjectID', 'Vendor_Number'])
 
     # Free up memory
@@ -140,7 +132,7 @@ def main():
     del vendor_means
 
     # Get vendor discrepancies at invoice level
-    logging.info(f'\n>> Calculating vendor invoice discrepancies ... ({time.ctime()})')
+    # logging.info(f'\n\t>> Calculating vendor invoice discrepancies')
     df['Invoice_Number_Length_Discr'] = df['Invoice_Number_Length'] - df['Vendor_Invoice_Number_Length']
     df['Invoice_Number_Numeric_Discr'] = df['Invoice_Number_Numeric'] - df['Vendor_Invoice_Number_Numeric']
     df['Invoice_Number_AlphasPct_Discr'] = df['Invoice_Number_AlphasPct'] - df['Vendor_Invoice_Number_AlphasPct']
@@ -179,7 +171,7 @@ def main():
 
     # Rollup to ReportID level
     rollup1 = ['ProjectID', 'Report_Group_Flag', 'ReportID']
-    logging.info(f'\n>> Rolling up to ReportID level ... ({time.ctime()})')
+    # logging.info(f'\n\t>> Rolling up to ReportID level')
 
     # Get aggregates
     means = df[mean_list].groupby(rollup1).mean()
@@ -194,7 +186,7 @@ def main():
     stds.columns = stds.columns + '_SDev'
 
     # Merge with count profiles
-    logging.info(f'\n>> Merging with ReportGroup level count profiles ... ({time.ctime()})')
+    # logging.info(f'\n\t>> Merging with ReportGroup level count profiles')
     agg1 = (means
             .merge(maxes, right_index=True, left_index=True)
             .merge(mins, right_index=True, left_index=True)
@@ -211,7 +203,7 @@ def main():
     del stds
 
     # Rollup to Report_Group_Flag level
-    logging.info(f'\n>> Rolling up to Report_Group_Flag level ... ({time.ctime()})')
+    # logging.info(f'\n\t>> Rolling up to Report_Group_Flag level')
     rollup2 = ['ProjectID', 'Report_Group_Flag']
     agg2 = agg1.groupby(rollup2).max()
     agg2['Max_Abs_Amount_SDev'] = 0
@@ -232,16 +224,14 @@ def main():
     # Output final data
     table_size = agg2.shape
     scoring_data = agg2.copy()
-    logging.info(
-        f'\n>> Data in memory has {table_size[0]} rows and {table_size[1]} columns ... ({time.ctime()})')
+    # logging.info(f'\n\t\t{table_size[0]} rows, {table_size[1]} columns')
 
     # Calculate correlations among predictive features
     correlations = scoring_data.corr()
 
     # Load calibrated model
     saved_model = application_path + '/RevenewML/savedmodels/' + model
-    logging.info(
-        f'\nStep 3 of 6: Scoring data with pre-calibrated XGBoost model... ({time.ctime()})')
+    logging.info(f'\nStep 3/6: Scoring processed data')
     clf = pickle.load(open(saved_model, 'rb'))
 
     # Predicted probabilities
@@ -263,7 +253,7 @@ def main():
         feature_dependence='tree_path_dependent')  # 'independent')
 
     # Explain the model's predictions using SHAP values
-    logging.info(f'\nStep 4 of 6: Interpreting individual feature effects ... ({time.ctime()})\n')
+    logging.info(f'\nStep 4/6: Interpreting feature effects')
     shap_values = explainer.shap_values(scoring_data)
 
     # Create score data frame
@@ -280,18 +270,18 @@ def main():
 
     # Top Features
     df_features = pd.DataFrame()
-    logging.info(f'Step 5 of 6: Extracting top features based on Shap value ... ({time.ctime()})\n')
+    logging.info(f'\nStep 5/6: Extracting top features')
     df_features = df_features.append([
         get_top_features(
             ix=ix,
             X=scoring_data,
             correlations=correlations,
             shap_values=shap_values)
-        for ix in tqdm(range(len(scoring_data)))
+        for ix in range(len(scoring_data))
     ])
 
     # Output status to console
-    logging.info(f'\nStep 6 of 6: Writing results to database ... ({time.ctime()})\n')
+    logging.info(f'\nStep 6/6: Writing results to database')
 
     # Create output table
     df_output = (scoring_data
@@ -313,10 +303,7 @@ def main():
     # Stop timer
     end = timer()
     elapsed = end - start
-    logging.info(
-        'Application finished in {:.2f} seconds ... ({})\n'
-        '\n<============================================================================>\n\n'.format(
-            elapsed, time.ctime()))
+    logging.info('\nApplication finished in {:.2f} seconds ... ({})'.format(elapsed, time.ctime()))
 
 
 if __name__ == '__main__':
