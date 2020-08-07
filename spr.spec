@@ -4,15 +4,27 @@ block_cipher = None
 
 a = Analysis(['spr.py'],
              binaries = [
-                ('C:\\Program Files\\Python37\\python37.dll', '.'),
-                ('C:\\Windows\\System32\\vcruntime140.dll', '.')
+                ('C:/Program Files/Python37/python37.dll', '.'),
+                ('C:/Windows/System32/vcruntime140.dll', '.'),
+                ('C:/Users/MichaelJohnson/repos/revenewml/venv37/xgboost/xgboost.dll', '.'),
+                ('C:/Users/MichaelJohnson/repos/revenewml/venv37/xgboost/vcomp140.dll', '.'),
              ],
              datas=[
                 ('LICENSE', '.'),
                 ('RevenewML/preprocessing/sql/*.sql', 'RevenewML/preprocessing/sql'),
                 ('RevenewML/savedmodels/*.dat', 'RevenewML/savedmodels'),
              ],
-             hiddenimports=['pyodbc','scipy','ipython','cython','pywin32','sklearn'],
+             hiddenimports=[
+                'pyodbc',
+                'scipy',
+                'ipython',
+                'cython',
+                'pywin32',
+                'sklearn.utils._cython_blas',
+                'sklearn.neighbors.typedefs',
+                'sklearn.neighbors.quad_tree',
+                'sklearn.tree._utils'
+             ],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -21,7 +33,7 @@ a = Analysis(['spr.py'],
              cipher=block_cipher,
              noarchive=False)
 pyz = PYZ(a.pure, a.zipped_data,
-             cipher=block_cipher)
+          cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
           [],
