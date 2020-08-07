@@ -2,21 +2,17 @@
 
 block_cipher = None
 
-
-a = Analysis(['ranking.py'],
-             pathex=['C:\\Users\\MichaelJohnson\\revenewcc'],
-             binaries=[('c:/users/michaeljohnson/anaconda3/envs/revenew/python37.dll', '.')],
+a = Analysis(['spr.py'],
+             binaries = [
+                ('C:\\Program Files\\Python37\\python37.dll', '.'),
+                ('C:\\Windows\\System32\\vcruntime140.dll', '.')
+             ],
              datas=[
                 ('LICENSE', '.'),
-             	('commodity.pkl', '.'),
-             	('crossref.pkl', '.'),
-             	('scorecard.pkl', '.'),
-             	('gooey/images/*.png', 'gooey/images'),
-             	('gooey/images/*.ico', 'gooey/images'),
-             	('gooey/images/*.gif', 'gooey/images'),
-             	('gooey/languages/*.json', 'gooey/languages'),
+                ('RevenewML/preprocessing/sql/*.sql', 'RevenewML/preprocessing/sql'),
+                ('RevenewML/savedmodels/*.dat', 'RevenewML/savedmodels'),
              ],
-             hiddenimports=['pyodbc', 'pywin32'],
+             hiddenimports=['pyodbc','scipy','ipython','cython','pywin32','sklearn'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -30,7 +26,7 @@ exe = EXE(pyz,
           a.scripts,
           [],
           exclude_binaries=True,
-          name='ranking',
+          name='spr',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
@@ -43,4 +39,4 @@ coll = COLLECT(exe,
                strip=False,
                upx=False,
                upx_exclude=[],
-               name='ranking')
+               name='spr')

@@ -27,7 +27,7 @@ def main():
     import pandas as pd
     from sqlalchemy import create_engine
     from timeit import default_timer as timer
-    from tqdm.auto import tqdm
+    from tqdm.gui import tqdm
 
     from RevenewML.preprocessing.lists.sum_list import sum_list
     from RevenewML.preprocessing.lists.min_list import min_list
@@ -63,7 +63,6 @@ def main():
 
     # Create connection strings
     conn_str = f'mssql://@{dsn}'
-    # conn_prm = dict(fast_executemany=True, isolation_level='AUTOCOMMIT', echo=False, )
 
     engine = create_engine(conn_str)
     # con = engine
