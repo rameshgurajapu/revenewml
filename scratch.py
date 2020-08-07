@@ -1,14 +1,14 @@
 import pandas as pd
 from sqlalchemy import create_engine
-from PyInstaller.utils.hooks import collect_all
-
-binaries, datas, hiddenimports = [], [], []
-
-a, b, c = collect_all('xgboost')
-a, b, c = collect_all('shap')
-a, b, c = collect_all('pandas')
-a, b, c = collect_all('matplotlib')
-a, b, c = collect_all('gooey')
+# from PyInstaller.utils.hooks import collect_all
+#
+# binaries, datas, hiddenimports = [], [], []
+#
+# a, b, c = collect_all('xgboost')
+# a, b, c = collect_all('shap')
+# a, b, c = collect_all('pandas')
+# a, b, c = collect_all('matplotlib')
+# a, b, c = collect_all('gooey')
 
 # from tqdm import tqdm
 # import pyspark
