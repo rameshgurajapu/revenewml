@@ -7,5 +7,5 @@ dist/
 /**/*.pyc
 /**/*.parquet
 /**/*.csv
-/**/*.txt
 venv*
+env/
