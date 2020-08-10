@@ -8,3 +8,4 @@ dist/
 /**/*.parquet
 /**/*.csv
 /**/*.txt
+venv/

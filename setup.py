@@ -1,22 +1,25 @@
 from setuptools import setup, find_packages
-import os
 
 setup(
-    name='revenewML',
-    version='0.1',
+    name='revenewCC',
+    version='0.6',
     packages=find_packages(),
     include_package_data=True,
-    install_dir=os.getcwd(),
     install_requires=[
-        'Click',
+        'fuzzywuzzy',
         'pandas',
-        'shap',
-        'SQLAlchemy',
+        'sqlalchemy',
+        'pillow',
+        'pyodbc',
+        'python-Levenshtein',
         'tqdm',
-        'xgboost'
+        'wxpython',
+        'xlsxwriter',
+        'numpy',
     ],
-    entry_points='''
-        [console_scripts]
-        revenewML=src.scoring:main
-    ''',
+    entry_points={
+        'console_scripts': [
+            'ranking=revenewCC.ranking:main'
+        ]
+    }
 )

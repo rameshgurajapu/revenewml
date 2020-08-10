@@ -1,4 +1,9 @@
-include config.ini
 include LICENSE
-include src/savedmodels/*.dat
-include src/preprocessing/*.sql
+include RevenewSPR/savedmodels/*.dat
+include RevenewSPR/preprocessing/sql/*.sql
+include gooey/images/*.png
+include gooey/images/*.ico
+include gooey/images/*.jpg
+include gooey/images/*.gif
+include gooey/languages/*.json
+include gooey/tests/*.json
