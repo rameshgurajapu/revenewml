@@ -18,7 +18,7 @@ from sqlalchemy import create_engine
 conn_str1 = 'mssql://@spr'
 engine1 = create_engine(conn_str1, echo=True)
 
-conn_str2 = 'mssql://mj:Number1cat!@aviana.database.windows.net:1433/Revenew?Driver={SQL Server};'
+conn_str2 = 'mssql://mj:Number1cat!@aviana.database.windows.net:1433/Revenew?Driver={ODBC Driver 17 for SQL Server};'
 engine2 = create_engine(conn_str2, echo=True)
 
 df1 = pd.read_sql_table('Duplicate Reports', engine1)
