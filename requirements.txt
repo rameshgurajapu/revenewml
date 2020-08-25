@@ -1,93 +1,40 @@
-altgraph==0.17
-appdirs==1.4.4
 backcall==0.2.0
-beautifulsoup4==4.9.1
-brotlipy==0.7.0
 certifi==2020.6.20
-cffi==1.14.0
-chardet==3.0.4
-cloudpickle @ file:///tmp/build/80754af9/cloudpickle_1594141588948/work
 colorama==0.4.3
-colored @ file:///home/conda/feedstock_root/build_artifacts/colored_1591809340407/work
-conda==4.8.3
-conda-build==3.18.11
-conda-package-handling==1.7.0
-cryptography==2.9.2
+colored==1.4.2
 cycler==0.10.0
-cytoolz==0.10.1
-dask @ file:///tmp/build/80754af9/dask-core_1594156306305/work
 decorator==4.4.2
-distlib==0.3.1
-filelock==3.0.12
-future==0.18.2
-glob2==0.7
-Gooey @ file:///D:/bld/gooey_1592893500702/work
-idna @ file:///tmp/build/80754af9/idna_1593446292537/work
-imageio @ file:///tmp/build/80754af9/imageio_1594161405741/work
-importlib-metadata==1.7.0
-ipython @ file:///C:/ci/ipython_1593433781269/work
+Gooey==1.0.4.0.0.0
+imageio==2.9.0
+ipython==7.17.0
 ipython-genutils==0.2.0
-jedi @ file:///C:/ci/jedi_1596472767194/work
-Jinja2==2.11.2
-joblib @ file:///tmp/build/80754af9/joblib_1594236160679/work
+jedi==0.17.2
+joblib==0.16.0
 kiwisolver==1.2.0
-libarchive-c==2.9
-macholib==1.11
-MarkupSafe @ file:///C:/ci/markupsafe_1594405949945/work
-matplotlib @ file:///C:/ci/matplotlib-base_1592846084747/work
-menuinst==1.4.16
-mkl-fft==1.1.0
-mkl-random==1.1.1
-mkl-service==2.3.0
-networkx @ file:///tmp/build/80754af9/networkx_1594377231366/work
-numpy @ file:///C:/ci/numpy_and_numpy_base_1596233945180/work
-olefile==0.46
-pandas @ file:///C:/ci/pandas_1592841747005/work
-parso==0.7.0
-pathlib2 @ file:///C:/ci/pathlib2_1594381094851/work
-pefile==2019.4.18
-pickleshare @ file:///C:/ci/pickleshare_1594374056827/work
-Pillow @ file:///C:/ci/pillow_1594298234712/work
-pip-chill==1.0.0
-pkginfo==1.5.0.1
-prompt-toolkit==3.0.5
-psutil==5.7.0
-pycosat==0.6.3
-pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
-pycryptodome==3.8.2
+matplotlib==3.3.1
+networkx==2.5
+numpy==1.19.1
+pandas==1.1.1
+parso==0.7.1
+pickleshare==0.7.5
+Pillow==7.2.0
+prompt-toolkit==3.0.6
+psutil==5.7.2
 Pygments==2.6.1
-PyInstaller==3.6
 pyodbc==4.0.30
-pyOpenSSL @ file:///tmp/build/80754af9/pyopenssl_1594392929924/work
 pyparsing==2.4.7
-Pypubsub==4.0.3
-PySocks @ file:///C:/ci/pysocks_1594394709107/work
 python-dateutil==2.8.1
 pytz==2020.1
 PyWavelets==1.1.1
-pywin32==227
-pywin32-ctypes @ file:///C:/ci/pywin32-ctypes_1594392691209/work
-PyYAML==5.3.1
-requests @ file:///tmp/build/80754af9/requests_1592841827918/work
-ruamel-yaml==0.15.87
-scikit-image==0.16.2
+scikit-image==0.17.2
 scikit-learn==0.21.2
-scipy==1.5.2
+scipy==1.4.1
 shap==0.29.3
 six==1.15.0
-soupsieve==2.0.1
-SQLAlchemy @ file:///C:/ci/sqlalchemy_1593445585180/work
-threadpoolctl @ file:///tmp/tmp9twdgx9k/threadpoolctl-2.1.0-py3-none-any.whl
-toolz==0.10.0
-tornado==6.0.4
-tqdm @ file:///tmp/build/80754af9/tqdm_1593446365756/work
+SQLAlchemy==1.3.19
+tifffile==2020.8.13
+tqdm==4.48.2
 traitlets==4.3.3
-urllib3==1.25.9
-versioneer==0.18
-virtualenv==20.0.31
-wcwidth @ file:///tmp/build/80754af9/wcwidth_1593447189090/work
-win-inet-pton==1.1.0
-wincertstore==0.2
+wcwidth==0.2.5
 wxPython==4.0.7
 xgboost==0.90
-zipp==3.1.0
