@@ -9,3 +9,4 @@ dist/
 /**/*.csv
 venv*
 env/
+log.txt
