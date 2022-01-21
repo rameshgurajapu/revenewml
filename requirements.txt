@@ -9,7 +9,7 @@ decorator==4.4.2
 future==0.18.2
 Gooey==1.0.4.0.0.0
 imageio==2.9.0
-ipython==7.17.0
+ipython==7.31.1
 ipython-genutils==0.2.0
 jedi==0.17.2
 joblib==0.16.0
