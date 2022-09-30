@@ -12,7 +12,7 @@ imageio==2.9.0
 ipython==7.17.0
 ipython-genutils==0.2.0
 jedi==0.17.2
-joblib==0.16.0
+joblib==1.2.0
 kiwisolver==1.2.0
 matplotlib==3.0.3
 networkx==2.5
